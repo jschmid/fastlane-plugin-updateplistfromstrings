@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'jonas.schmid@gmail.com'
 
   spec.summary       = 'Allow to take values from the localization.strings and put them into Info.plist'
-  # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-updateplistfromstrings"
+  spec.homepage      = "https://github.com/jschmid/fastlane-plugin-updateplistfromstrings"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
