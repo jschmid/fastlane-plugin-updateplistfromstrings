@@ -31,5 +31,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '0.49.1'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'fastlane', '>= 2.66.2'
-  spec.add_dependency 'fastlane-plugin-poeditor_export'
 end
