@@ -17,10 +17,10 @@ module Fastlane
         # Preserve the non-managed lines:
         non_managed_lines = []
 
-        if File.exists?(target_file)
+        if File.exist?(target_file)
           open(target_file, encoding: 'bom|utf-8') do |f|
             f.each_line do |line|
-              non_managed_lines << line.strip if not /#{managed_marker}/.match(line)
+              non_managed_lines << line.strip unless /#{managed_marker}/.match?(line)
             end
           end
         end
@@ -28,42 +28,41 @@ module Fastlane
         # Build the managed lines, and set Info.plist key/values.
         managed_lines = []
         managed_target_keys = []
-        open(input_file,  encoding: 'bom|utf-8') do |f|
+        open(input_file, encoding: 'bom|utf-8') do |f|
           f.each_line do |line|
             key_map.each do |target_key, source_key|
               regex = /^"#{source_key}"\s*=\s*"(?<value>.*)"\s*;\s*$/
               matches = line.match(regex)
-              if matches
-                next if omit_if_empty_value and matches['value'].empty?
+              next unless matches
+              next if omit_if_empty_value and matches['value'].empty?
 
-                quoted_source_key = %Q("#{source_key}")
-                target_line = line.sub(quoted_source_key, target_key).strip
-                if use_key_for_empty_value and matches['value'].empty?
-                  value = source_key
-                  target_line.sub!(/"";$/, quoted_source_key + ";")
-                else
-                  value = matches['value']
-                end
-                target_line += "  /* #{managed_marker} */"
-                managed_lines << target_line
-                managed_target_keys << target_key
+              quoted_source_key = %("#{source_key}")
+              target_line = line.sub(quoted_source_key, target_key).strip
+              if use_key_for_empty_value and matches['value'].empty?
+                value = source_key
+                target_line.sub!(/"";$/, quoted_source_key + ";")
+              else
+                value = matches['value']
+              end
+              target_line += "  /* #{managed_marker} */"
+              managed_lines << target_line
+              managed_target_keys << target_key
 
-                if set_in_plist
-                  UI.message "Setting in Info.plist: #{target_key} = #{value}"
-                  Fastlane::Actions::SetInfoPlistValueAction.run(path: plist_path, key: target_key, value: value)
-                end
+              if set_in_plist
+                UI.message "Setting in Info.plist: #{target_key} = #{value}"
+                Fastlane::Actions::SetInfoPlistValueAction.run(path: plist_path, key: target_key, value: value)
               end
             end
           end
         end
 
         # Remove any non-managed lines that are now managed.
-        non_managed_lines = non_managed_lines.reject { |line|
-          managed_target_keys.find { |key| line.match(/^#{key}\s*=\s*".*"\s*;.*$/)}
-        }
+        non_managed_lines = non_managed_lines.reject do |line|
+          managed_target_keys.find { |key| line.match(/^#{key}\s*=\s*".*"\s*;.*$/) }
+        end
 
         IO.write(target_file_tmp, (non_managed_lines + managed_lines).join("\n") + "\n")
-        FileUtils.mv(target_file_tmp, target_file, :force => true)
+        FileUtils.mv(target_file_tmp, target_file, force: true)
 
         UI.message "#{managed_lines.length} managed translation values set in #{target_file}"
       end
@@ -108,7 +107,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :plist_path,
                                       description: "Path to Info.plist file",
                                       default_value: "")
-          ]
+        ]
       end
 
       def self.output
@@ -124,9 +123,8 @@ module Fastlane
       end
 
       def self.is_supported?(platform)
-         platform == :ios
+        platform == :ios
       end
-
     end
   end
 end

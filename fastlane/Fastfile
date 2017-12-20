@@ -1,17 +1,17 @@
 lane :test do
   langs = ["en", "de", "fr", "it"]
-  langs.each { |lang|
+  langs.each do |lang|
     updateplistfromstrings(
-        translations_source_file: "#{lang}.lproj/Localizable.strings",
-        info_plist_strings_target_file: "#{lang}.lproj/InfoPlist.strings",
-        string_key_map: {
-            "NSCameraUsageDescription" => "permissions.camera_access_reason",
-            "NSPhotoLibraryUsageDescription" => "permissions.library_access_reason",
-            "CFBundleDisplayName" => "app_name",
-            "CFBundleName" => "app_name",
-        },
-        set_values_in_info_plist: false,
-        omit_if_value_empty: true
+      translations_source_file: "#{lang}.lproj/Localizable.strings",
+      info_plist_strings_target_file: "#{lang}.lproj/InfoPlist.strings",
+      string_key_map: {
+          "NSCameraUsageDescription" => "permissions.camera_access_reason",
+          "NSPhotoLibraryUsageDescription" => "permissions.library_access_reason",
+          "CFBundleDisplayName" => "app_name",
+          "CFBundleName" => "app_name"
+      },
+      set_values_in_info_plist: false,
+      omit_if_value_empty: true
     )
-  }
+  end
 end
