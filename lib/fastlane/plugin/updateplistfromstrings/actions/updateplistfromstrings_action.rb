@@ -18,11 +18,7 @@ module Fastlane
         non_managed_lines = []
 
         if File.exist?(target_file)
-          open(target_file, encoding: 'bom|utf-8') do |f|
-            f.each_line do |line|
-              non_managed_lines << line.strip unless /#{managed_marker}/.match?(line)
-            end
-          end
+          non_managed_lines = File.readlines(target_file, encoding: 'bom|utf-8').map { |line| line.strip unless line =~ /#{managed_marker}/ }.compact
         end
 
         # Build the managed lines, and set Info.plist key/values.
